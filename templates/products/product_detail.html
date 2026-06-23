@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Bosh sahifa</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'product_list' %}">Mahsulotlar</a></li>
+            <li class="breadcrumb-item active">{{ product.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="row g-5">
+        <div class="col-md-5">
+            {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid rounded shadow">
+            {% else %}
+            <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 350px;">
+                <i class="bi bi-image text-muted" style="font-size: 5rem;"></i>
+            </div>
+            {% endif %}
+        </div>
+        <div class="col-md-7">
+            <span class="badge bg-secondary mb-2">{{ product.category.name }}</span>
+            <h1 class="fw-bold">{{ product.name }}</h1>
+            
+            {% if product.discount_price %}
+            <h3 class="text-danger fw-bold">{{ product.discount_price }} so'm</h3>
+            <p class="text-muted text-decoration-line-through">{{ product.price }} so'm</p>
+            {% else %}
+            <h3 class="text-primary fw-bold">{{ product.price }} so'm</h3>
+            {% endif %}
+
+            <p class="text-muted">{{ product.description }}</p>
+
+            <div class="mb-3">
+                {% if product.stock > 0 %}
+                <span class="badge bg-success"><i class="bi bi-check-circle"></i> Mavjud ({{ product.stock }} ta)</span>
+                {% else %}
+                <span class="badge bg-danger"><i class="bi bi-x-circle"></i> Tugagan</span>
+                {% endif %}
+            </div>
+
+            {% if product.stock > 0 %}
+            <a href="{% url 'add_to_cart' product.id %}" class="btn btn-primary btn-lg me-2">
+                <i class="bi bi-cart-plus"></i> Savatga qo'sh
+            </a>
+            {% endif %}
+            <a href="{% url 'product_list' %}" class="btn btn-outline-secondary btn-lg">
+                <i class="bi bi-arrow-left"></i> Orqaga
+            </a>
+        </div>
+    </div>
+
+    <!-- Related Products -->
+    {% if related %}
+    <div class="mt-5">
+        <h4 class="fw-bold mb-4">O'xshash mahsulotlar</h4>
+        <div class="row g-4">
+            {% for item in related %}
+            <div class="col-6 col-md-3">
+                <div class="card border-0 shadow-sm h-100 product-card">
+                    <a href="{% url 'product_detail' item.slug %}">
+                        {% if item.image %}
+                        <img src="{{ item.image.url }}" class="card-img-top" alt="{{ item.name }}" style="height: 150px; object-fit: cover;">
+                        {% else %}
+                        <div class="bg-light d-flex align-items-center justify-content-center" style="height: 150px;">
+                            <i class="bi bi-image text-muted fs-2"></i>
+                        </div>
+                        {% endif %}
+                    </a>
+                    <div class="card-body text-center">
+                        <h6>{{ item.name }}</h6>
+                        <strong class="text-primary">{{ item.get_final_price }} so'm</strong>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

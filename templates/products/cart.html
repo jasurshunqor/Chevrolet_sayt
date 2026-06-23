@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block title %}Savat{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="fw-bold mb-4"><i class="bi bi-cart3"></i> Mening Savatim</h2>
+
+    {% if cart.items.all %}
+    <div class="row g-4">
+        <div class="col-md-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-0">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Mahsulot</th>
+                                <th class="text-center">Narx</th>
+                                <th class="text-center">Miqdor</th>
+                                <th class="text-center">Jami</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in cart.items.all %}
+                            <tr>
+                                <td class="align-middle">
+                                    <div class="d-flex align-items-center">
+                                        {% if item.product.image %}
+                                        <img src="{{ item.product.image.url }}" width="50" height="50" class="rounded me-3" style="object-fit: cover;">
+                                        {% endif %}
+                                        <strong>{{ item.product.name }}</strong>
+                                    </div>
+                                </td>
+                                <td class="text-center align-middle">{{ item.product.get_final_price }} so'm</td>
+                                <td class="text-center align-middle">
+                                    <form method="POST" action="{% url 'update_cart' item.id %}" class="d-flex align-items-center justify-content-center">
+                                        {% csrf_token %}
+                                        <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="{{ item.product.stock }}" class="form-control form-control-sm text-center" style="width: 60px;">
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary ms-1"><i class="bi bi-check"></i></button>
+                                    </form>
+                                </td>
+                                <td class="text-center align-middle fw-bold">{{ item.get_subtotal }} so'm</td>
+                                <td class="text-center align-middle">
+                                    <a href="{% url 'remove_from_cart' item.id %}" class="btn btn-sm btn-outline-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <strong>Buyurtma xulosasi</strong>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Mahsulotlar ({{ cart.get_item_count }} ta)</span>
+                        <span>{{ cart.get_total }} so'm</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Yetkazib berish</span>
+                        <span class="text-success">Bepul</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between fw-bold fs-5">
+                        <span>Jami</span>
+                        <span class="text-primary">{{ cart.get_total }} so'm</span>
+                    </div>
+                    <a href="{% url 'checkout' %}" class="btn btn-primary w-100 mt-3">
+                        <i class="bi bi-credit-card"></i> Buyurtma berish
+                    </a>
+                    <a href="{% url 'product_list' %}" class="btn btn-outline-secondary w-100 mt-2">
+                        <i class="bi bi-arrow-left"></i> Xarid davom ettirish
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <i class="bi bi-cart-x" style="font-size: 5rem; color: #ccc;"></i>
+        <h4 class="text-muted mt-3">Savatingiz bo'sh</h4>
+        <a href="{% url 'product_list' %}" class="btn btn-primary mt-3">Xarid qilish</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}FF

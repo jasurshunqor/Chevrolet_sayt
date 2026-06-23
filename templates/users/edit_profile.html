@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Profilni Tahrirlash{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-lg rounded-3">
+                <div class="card-header bg-primary text-white text-center py-3">
+                    <h4 class="mb-0"><i class="bi bi-pencil-square"></i> Profilni Tahrirlash</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Profil Rasm</label>
+                            {% if profile.profile_picture %}
+                            <div class="mb-2">
+                                <img src="{{ profile.profile_picture.url }}" width="80" height="80" class="rounded-circle" style="object-fit: cover;">
+                            </div>
+                            {% endif %}
+                            <input type="file" class="form-control" name="profile_picture" accept="image/*">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Tug'ilgan Sana</label>
+                            <input type="date" class="form-control" name="date_of_birth" value="{{ profile.date_of_birth|default:'' }}">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Bio</label>
+                            <textarea class="form-control" name="bio" rows="3" placeholder="O'zingiz haqingizda...">{{ profile.bio|default:'' }}</textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Veb-sayt</label>
+                            <input type="url" class="form-control" name="website" placeholder="https://example.com" value="{{ profile.website|default:'' }}">
+                        </div>
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-check-circle"></i> Saqlash
+                            </button>
+                            <a href="{% url 'profile' %}" class="btn btn-outline-secondary">Bekor qilish</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

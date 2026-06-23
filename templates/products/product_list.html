@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}Mahsulotlar{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <strong><i class="bi bi-funnel"></i> Kategoriyalar</strong>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item {% if not selected_category %}active{% endif %}">
+                        <a href="{% url 'product_list' %}" class="text-decoration-none {% if not selected_category %}text-white{% endif %}">
+                            Barchasi
+                        </a>
+                    </li>
+                    {% for cat in categories %}
+                    <li class="list-group-item {% if selected_category == cat.slug %}active{% endif %}">
+                        <a href="{% url 'product_list' %}?category={{ cat.slug }}" class="text-decoration-none {% if selected_category == cat.slug %}text-white{% endif %}">
+                            {{ cat.name }}
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <!-- Products -->
+        <div class="col-md-9">
+            {% if search_query %}
+            <p class="text-muted mb-3">"<strong>{{ search_query }}</strong>" uchun {{ products|length }} ta natija topildi</p>
+            {% endif %}
+            <div class="row g-4">
+                {% for product in products %}
+                <div class="col-6 col-lg-4">
+                    <div class="card h-100 border-0 shadow-sm product-card">
+                        <a href="{% url 'product_detail' product.slug %}">
+                            {% if product.image %}
+                            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+                            {% else %}
+                            <div class="bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                <i class="bi bi-image text-muted fs-1"></i>
+                            </div>
+                            {% endif %}
+                        </a>
+                        <div class="card-body d-flex flex-column">
+                            <span class="badge bg-secondary mb-1">{{ product.category.name }}</span>
+                            <h6 class="card-title">
+                                <a href="{% url 'product_detail' product.slug %}" class="text-decoration-none text-dark">{{ product.name }}</a>
+                            </h6>
+                            <div class="mt-auto">
+                                {% if product.discount_price %}
+                                <div><span class="text-danger fw-bold">{{ product.discount_price }} so'm</span></div>
+                                <div><span class="text-muted text-decoration-line-through small">{{ product.price }} so'm</span></div>
+                                {% else %}
+                                <span class="fw-bold text-primary">{{ product.price }} so'm</span>
+                                {% endif %}
+                                <a href="{% url 'add_to_cart' product.id %}" class="btn btn-sm btn-primary w-100 mt-2">
+                                    <i class="bi bi-cart-plus"></i> Savatga qo'sh
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12 text-center py-5">
+                    <i class="bi bi-search fs-1 text-muted"></i>
+                    <h5 class="text-muted mt-3">Mahsulot topilmadi</h5>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

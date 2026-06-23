@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Buyurtma Berish{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="fw-bold mb-4"><i class="bi bi-bag-check"></i> Buyurtma Berish</h2>
+    <div class="row g-4">
+        <div class="col-md-7">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <strong>Yetkazib berish ma'lumotlari</strong>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Manzil *</label>
+                            <textarea name="address" class="form-control" rows="3" placeholder="To'liq manzilingizni kiriting..." required>{{ request.user.address }}</textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Telefon raqam *</label>
+                            <input type="tel" name="phone" class="form-control" placeholder="+998 90 123 45 67" value="{{ request.user.phone }}" required>
+                        </div>
+                        <button type="submit" class="btn btn-success btn-lg w-100">
+                            <i class="bi bi-check-circle"></i> Buyurtmani Tasdiqlash
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <strong>Savat ({{ cart.get_item_count }} ta mahsulot)</strong>
+                </div>
+                <div class="card-body p-0">
+                    {% for item in cart.items.all %}
+                    <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
+                        <div>
+                            <strong>{{ item.product.name }}</strong>
+                            <small class="text-muted d-block">{{ item.quantity }} x {{ item.product.get_final_price }} so'm</small>
+                        </div>
+                        <strong>{{ item.get_subtotal }} so'm</strong>
+                    </div>
+                    {% endfor %}
+                    <div class="p-3">
+                        <div class="d-flex justify-content-between fw-bold fs-5">
+                            <span>Jami:</span>
+                            <span class="text-primary">{{ cart.get_total }} so'm</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

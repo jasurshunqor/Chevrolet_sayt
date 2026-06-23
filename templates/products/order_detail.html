@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}Buyurtma #{{ order.id }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0">Buyurtma #{{ order.id }}</h2>
+        <a href="{% url 'order_list' %}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Orqaga</a>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-dark text-white"><strong>Mahsulotlar</strong></div>
+                <table class="table mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Mahsulot</th>
+                            <th class="text-center">Miqdor</th>
+                            <th class="text-center">Narx</th>
+                            <th class="text-center">Jami</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in order.items.all %}
+                        <tr>
+                            <td>{{ item.product.name }}</td>
+                            <td class="text-center">{{ item.quantity }}</td>
+                            <td class="text-center">{{ item.price }} so'm</td>
+                            <td class="text-center fw-bold">{{ item.get_subtotal }} so'm</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3" class="text-end fw-bold">Jami:</td>
+                            <td class="text-center fw-bold text-primary">{{ order.total_price }} so'm</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-dark text-white"><strong>Buyurtma ma'lumotlari</strong></div>
+                <div class="card-body">
+                    <p><strong>Sana:</strong> {{ order.created_at|date:"d.m.Y H:i" }}</p>
+                    <p><strong>Manzil:</strong> {{ order.address }}</p>
+                    <p><strong>Telefon:</strong> {{ order.phone }}</p>
+                    <p><strong>Holat:</strong>
+                        {% if order.status == 'pending' %}
+                        <span class="badge bg-warning text-dark">Kutilmoqda</span>
+                        {% elif order.status == 'processing' %}
+                        <span class="badge bg-info">Jarayonda</span>
+                        {% elif order.status == 'shipped' %}
+                        <span class="badge bg-primary">Yuborildi</span>
+                        {% elif order.status == 'delivered' %}
+                        <span class="badge bg-success">Yetkazildi</span>
+                        {% elif order.status == 'cancelled' %}
+                        <span class="badge bg-danger">Bekor qilindi</span>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
