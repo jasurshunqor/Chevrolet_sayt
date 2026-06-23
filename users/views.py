@@ -53,17 +53,3 @@ def profile_view(request):
     return render(request, 'users/profile.html', {'profile': profile})
 
 
-@login_required
-def edit_profile_view(request):
-    profile = request.user.profile
-    if request.method == 'POST':
-        form = ProfileForm(request.POST, request.FILES, instance=profile)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Profilingiz muvaffaqiyatli yangilandi!')
-            return redirect('profile')
-        else:
-            messages.error(request, 'Profilni yangilashda xatolik yuz berdi.')
-    else:
-        form = ProfileForm(instance=profile)
-    return render(request, 'users/edit_profile.html', {'form': form, 'profile': profile})
